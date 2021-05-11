@@ -37,15 +37,15 @@ public class SwimInRisingWater {
             return Math.min(grid[grid.length - 1][grid.length - 2], grid[grid.length - 2][grid.length - 1]);
         }
         int[] traversed = new int[grid.length * grid.length];
-        findRoute(grid, traversed, new int[]{0, 0}, new ArrayList<>());
+        findRoute(grid, traversed, new int[]{0, 0}, new ArrayList<>(), grid.length-1, grid.length-1);
         return min;
     }
 
-    private static void findRoute(int[][] grid, int[] traversed, int[] current, List<Integer> route) {
+    private static void findRoute(int[][] grid, int[] traversed, int[] current, List<Integer> route, int endX, int endY) {
         route.add(grid[current[0]][current[1]]);
         traversed[grid[current[0]][current[1]]] = 1;
         grid[current[0]][current[1]] = -1;
-        if (current[0] == grid.length - 1 && current[1] == grid.length - 1) {
+        if (current[0] == endX && current[1] == endY) {
             for (int i = traversed.length - 1; i >= 0; i--) {
                 if (traversed[i] == 1) {
                     if (min > i) {
@@ -54,7 +54,7 @@ public class SwimInRisingWater {
                     break;
                 }
             }
-//            System.out.println("Min: " + min + " - " + route);
+            // System.out.println("Min: " + min + " - " + route);
             return;
         }
 //        System.out.println("Min: " + "   " + " - " + route);
@@ -74,7 +74,7 @@ public class SwimInRisingWater {
             for (int i = 0; i < grid.length; i++) {
                 gr[i] = Arrays.copyOf(grid[i], grid.length);
             }
-            findRoute(gr, trv, nextMove, new ArrayList<>(route));
+            findRoute(gr, trv, nextMove, new ArrayList<>(route), endX, endY);
         }
     }
 
@@ -105,6 +105,9 @@ public class SwimInRisingWater {
             if (validNextMove(move, grid)) {
                 result.add(move);
             }
+        }
+        if (result.size() <= 1) {
+            return result;
         }
         if (result.size() > 1) {
           for (int i = 0; i < result.size()-1; i++) {
