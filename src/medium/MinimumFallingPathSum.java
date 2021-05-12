@@ -26,61 +26,46 @@ public class MinimumFallingPathSum {
                         testCase5[i][j] = Integer.parseInt(columns[j]);
                     }
 
-                }
-            }
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
         }
-
-       long start = System.currentTimeMillis();
-//       System.out.println(Objects.equals(13, new MinimumFallingPathSum().minFallingPathSum(testCase1)));
-//       System.out.println(Objects.equals(-1428, new MinimumFallingPathSum().minFallingPathSum(testCase2)));
-//       System.out.println(Objects.equals(-354, new MinimumFallingPathSum().minFallingPathSum(testCase4)));
-        System.out.println(Objects.equals(-6646, new MinimumFallingPathSum().minFallingPathSum(testCase5)));
-       long end = System.currentTimeMillis();
-       System.out.println("Execution time: " + (end-start) + " ms");
+      }
+      myReader.close();
+    } catch (FileNotFoundException e) {
+      System.out.println("An error occurred.");
+      e.printStackTrace();
     }
 
-    private static final int[][] DIRS = {{1,-1}, {1, 0}, {1,1}};
-    private static int minSum;
-    private static int[][] maxSum;
-    public int minFallingPathSum(int[][] matrix) {
-        minSum = Integer.MAX_VALUE;
-        maxSum = new int[matrix.length][matrix.length];
-        long start = System.currentTimeMillis();
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                maxSum[i][j] = Integer.MAX_VALUE;
-            }
-        }
-        long end = System.currentTimeMillis();
-        System.out.println(end - start);
-        for (int i = 0; i < matrix[0].length; i++) {
-            findMin(matrix, 0, i, matrix[0][i]);
-        }
-        return minSum;
-    }
+    long start = System.currentTimeMillis();
+    System.out.println(Objects.equals(13, new MinimumFallingPathSum().minFallingPathSum(testCase1)));
+//    System.out.println(Objects.equals(-1428, new MinimumFallingPathSum().minFallingPathSum(testCase2)));
+    //       System.out.println(Objects.equals(-354, new MinimumFallingPathSum().minFallingPathSum(testCase4)));
+    long end = System.currentTimeMillis();
+    System.out.println("Execution time: " + (end - start) + " ms");
+  }
 
-    private void findMin(int[][] matrix, int x, int y, int sum) {
-        if (x > matrix.length-1 || x < 0 || y > matrix[x].length-1 || y < 0) {
-            return;
-        }
-        if (x == matrix.length - 1 && minSum > sum) {
-            minSum = sum;
-        }
-        for (int[] dir : DIRS) {
-            int newX = x+dir[0];
-            int newY = y+dir[1];
-            if (newX > matrix.length-1 || newX < 0 || newY > matrix[newX].length-1
-                    || newY < 0 || sum+matrix[newX][newY] > maxSum[newX][newY]) {
-                continue;
-            }
-            sum+=matrix[newX][newY];
-            maxSum[newX][newY] = sum;
-            findMin(matrix, newX, newY, sum);
-            sum-=matrix[newX][newY];
-        }
+  private static int min = Integer.MAX_VALUE;
+
+  public int minFallingPathSum(int[][] matrix) {
+    risingUp(matrix, 0);
+    return min;
+  }
+
+  private static void risingUp(int[][] matrix, int i) {
+    if (i < matrix.length - 1) {
+      risingUp(matrix, i + 1);
+      for (int j = 0; j < matrix[i].length; j++) {
+        int current = matrix[i][j];
+        matrix[i][j] = matrix[i + 1][j] + current;
+        matrix[i][j] = j - 1 < 0 ? matrix[i][j] : Math.min(matrix[i + 1][j - 1] + current, matrix[i][j]);
+        matrix[i][j] = j + 1 > matrix[i + 1].length - 1 ?
+            matrix[i][j] :
+            Math.min(matrix[i + 1][j + 1] + current, matrix[i][j]);
+      }
     }
+    if (i > 0) {
+      return;
+    }
+    for (int j = 0; i < matrix.length && j < matrix[i].length; j++) {
+      min = Math.min(min, matrix[i][j]);
+    }
+  }
 }
