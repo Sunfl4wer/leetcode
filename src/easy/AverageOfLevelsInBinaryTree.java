@@ -28,10 +28,10 @@ public class AverageOfLevelsInBinaryTree {
   
   private static void traverse(TreeNode node, int level) {
     if (count.size() == level) {
-      count.add(List.of(Integer.valueOf(node.val), 1));
+      count.add(List.of(node.val, 1));
     } else {
       List<Integer> val = count.get(level);
-      count.add(level, List.of(val.get(0)+node.val, val.get(1)+1));
+      count.set(level, List.of(val.get(0)+node.val, val.get(1)+1));
     }
     if (node.left != null) {
       traverse(node.left, level+1);
